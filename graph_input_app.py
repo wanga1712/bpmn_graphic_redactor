@@ -112,7 +112,7 @@ class GraphInputApp(tk.Tk):
             # Опционально очистить поля ввода после добавления узла
             self.node_name_entry.delete(0, tk.END)
         else:
-            messagebox.showerror("Error", "Название узла не может быть пустым.")
+            messagebox.showerror("Ошибка", "Название узла не может быть пустым.")
 
     def update_edge_menus(self):
         self.edge_from_menu['values'] = self.graph.get_node_names()
