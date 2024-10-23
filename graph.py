@@ -10,7 +10,7 @@ class Graph:
         self.dot = graphviz.Digraph()
 
         self.node_types = {
-            "Прямоугольник": "rectangle",
+            "Прямугольник": "rectangle",
             "Ромб": "diamond",
             "Эллипс": "ellipse",
             "Круг": "circle",
