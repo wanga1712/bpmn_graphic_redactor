@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk
 from graph import Graph
 
 
@@ -10,15 +10,6 @@ class GraphInputApp(tk.Tk):
         self.geometry("400x400")
 
         self.graph = Graph()  # Создаем экземпляр графа
-        self.node_types = {  # Добавляем типы узлов на русском
-            "Прямоугольник": "rectangle",
-            "Ромб": "diamond",
-            "Эллипс": "ellipse",
-            "Круг": "circle",
-            "Ящик": "box",
-            "Параллелограмм": "parallelogram",
-            "Шестиугольник": "hexagon"
-        }
 
         # UI Elements
         self.create_widgets()
@@ -34,7 +25,7 @@ class GraphInputApp(tk.Tk):
         self.node_type_label.grid(row=1, column=0, padx=5, pady=5)
         self.node_type_var = tk.StringVar(value="Прямоугольник")
         self.node_type_menu = ttk.Combobox(self, textvariable=self.node_type_var)
-        self.node_type_menu['values'] = list(self.node_types.keys())  # Получаем типы узлов на русском
+        self.node_type_menu['values'] = list(self.graph.node_types.keys())  # Получаем типы узлов
         self.node_type_menu.grid(row=1, column=1, padx=5, pady=5)
 
         self.add_node_button = tk.Button(self, text="Добавить узел", command=self.add_node)
@@ -86,7 +77,7 @@ class GraphInputApp(tk.Tk):
             entry.delete(0, tk.END)
             entry.insert(0, self.clipboard_get())
         except tk.TclError:
-            messagebox.showerror("Ошибка вставки", "Не удалось вставить текст из буфера обмена.")
+            self.graph.show_error("Ошибка вставки", "Не удалось вставить текст из буфера обмена.")
 
     def add_edge(self):
         edge_from = self.edge_from_menu.get()
@@ -95,7 +86,7 @@ class GraphInputApp(tk.Tk):
 
         if edge_label == "":
             if self.edge_label_var.get() == "да":
-                messagebox.showerror("Ошибка", "Если выбрано 'Да', необходимо ввести метку.")
+                self.graph.show_error("Ошибка", "Если выбрано 'Да', необходимо ввести метку.")
                 return
             edge_label = None  # Если "Нет", то метка пустая
 
@@ -104,15 +95,14 @@ class GraphInputApp(tk.Tk):
 
     def add_node(self):
         node_name = self.node_name_entry.get()
-        node_type = self.node_types[self.node_type_var.get()]  # Получаем значение для типа узла
+        node_type = self.graph.node_types[self.node_type_var.get()]  # Получаем значение для типа узла
 
         if node_name:
             self.graph.add_node(node_name, node_type)  # Добавляем узел в граф
             self.update_edge_menus()  # Обновляем меню связей
-            # Опционально очистить поля ввода после добавления узла
-            self.node_name_entry.delete(0, tk.END)
+            self.node_name_entry.delete(0, tk.END)  # Очищаем поле ввода
         else:
-            messagebox.showerror("Error", "Название узла не может быть пустым.")
+            self.graph.show_error("Ошибка", "Название узла не может быть пустым.")
 
     def update_edge_menus(self):
         self.edge_from_menu['values'] = self.graph.get_node_names()
