@@ -72,9 +72,13 @@ class GraphRenderer:
             # Создаем интерактивную сеть с помощью pyvis
             net = Network(directed=True)
 
-            # Добавляем узлы с учетом формы
+            # Получаем позиции узлов
+            pos = self.get_node_positions()
+
+            # Добавляем узлы с учетом формы и их позиций
             for node, shape in self.nodes.items():
-                net.add_node(node, label=node, shape="ellipse" if shape == "Круг" else "box")
+                x, y = pos.get(node, (0, 0))  # Получаем позицию узла или (0, 0) если нет
+                net.add_node(node, label=node, shape="ellipse" if shape == "Круг" else "box", x=x, y=y)
 
             # Добавляем связи с учетом направлений и меток
             for from_node, to_node, label, direction in self.edges:
